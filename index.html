@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yellow Flowers For You</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #fffcf0;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #fff8e1, #fffde7);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #e6b400;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .date {
+            font-size: 1.2rem;
+            color: #b28500;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .message p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .flower-field {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px 20px;
+            perspective: 1000px;
+        }
+        
+        .flower {
+            margin: 20px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            cursor: pointer;
+        }
+        
+        .flower:hover {
+            transform: translateY(-10px) rotateY(10deg);
+        }
+        
+        .flower svg {
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff8e1;
+            color: #b28500;
+            margin-top: 40px;
+        }
+        
+        .falling-petals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .petal {
+            position: absolute;
+            background-color: rgba(255, 223, 0, 0.3);
+            border-radius: 50% 0 50% 0;
+            transform: rotate(45deg);
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .memory-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fffde7;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .memory-container h2 {
+            color: #e6b400;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .memory-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .memory-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .memory-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .secret-message {
+            opacity: 0;
+            transition: opacity 0.5s;
+            text-align: center;
+            color: #e6b400;
+            font-style: italic;
+            margin: 30px 0;
+            font-size: 1.2rem;
+        }
+
+        /* Music player styles */
+        .music-player {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 15px;
+            background-color: #fffde7;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .music-player h3 {
+            color: #e6b400;
+            margin-bottom: 15px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            background-color: #ffeb3b;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: #b28500;
+        }
+        
+        .btn:hover {
+            background-color: #ffd600;
+        }
+        
+        .heart-animation {
+            position: fixed;
+            font-size: 2rem;
+            user-select: none;
+            pointer-events: none;
+            animation: float 4s ease-out;
+            z-index: 9999;
+            opacity: 0;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 767px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .message {
+                padding: 20px;
+                margin: 0 15px;
+            }
+            
+            .message p {
+                font-size: 1rem;
+            }
+            
+            .flower svg {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .music-player {
+                margin: 30px 15px;
+            }
+            
+            .memory-container {
+                margin: 30px 15px;
+            }
+            
+            /* Improved audio player for mobile */
+            .audio-progress {
+                height: 8px;
+                border-radius: 4px;
+            }
+        }
+        
+        /* Audio player styling */
+        .audio-container {
+            width: 100%;
+            max-width: 350px;
+            margin: 15px auto;
+            background-color: #fffaf0;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .audio-progress {
+            width: 100%;
+            height: 6px;
+            background-color: #ffeeba;
+            border-radius: 3px;
+            margin: 10px 0;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #ffcc00;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #b28500;
+            margin-bottom: 10px;
+        }
+        
+        /* Photo gallery */
+        .photo-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 15px;
+        }
+        
+        .photo-frame {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: rotate(0deg);
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .photo-frame:nth-child(odd) {
+            transform: rotate(-3deg);
+        }
+        
+        .photo-frame:nth-child(even) {
+            transform: rotate(3deg);
+        }
+        
+        .photo-frame:hover {
+            transform: scale(1.05) rotate(0);
+            z-index: 2;
+        }
+        
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #ffeeba;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b28500;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="falling-petals" id="petalContainer"></div>
+    
+    <div class="header">
+        <h1>Yellow Flowers For You</h1>
+        <div class="date">March 21, 2025</div>
+    </div>
+    
+    <div class="message">
+        <p>My dearest,</p>
+        <p>Distance may separate us, but my love is stronger. On this special day of yellow flowers, I wanted to create something that reminds you of my love, no matter where you are.</p>
+        <p>Like these flowers that bloom even in every conditions, my love for you grows each day. Each flower on this page represents a reason I love you - click on them to discover why you're special to me.</p>
+        <p>With all my love,</p>
+        <p>Yael</p>
+    </div>
+    
+    <div class="flower-field" id="flowerField">
+        <!-- Flowers will be generated here -->
+    </div>
+    
+    <div class="secret-message" id="secretMessage">
+        I love you more than all the yellow flowers in the world combined ❤️
+    </div>
+    
+    <div class="music-player">
+        <h3>Listen this song for u <3</h3>
+        <div id="songTitle">JVKE - this is what falling in love feels like</div>
+        
+        <div class="audio-container">
+            <audio id="song" preload="metadata">
+                <source src="JVKE.mp3" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+            
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+            
+            <div class="audio-progress" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" id="playButton">▶️</button>
+                <button class="btn" id="pauseButton">⏸️</button>
+                <button class="btn" id="restartButton">🔄</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Photo Gallery Section -->
+    <div class="photo-gallery">
+        <div class="photo-frame">
+            <img src="pics/im1.jpeg" alt="Imagen 1" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="photo-frame">
+            <img src="pics/im2.jpeg" alt="Imagen 2" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="photo-frame">
+            <img src="pics/im3.jpeg" alt="Imagen 3" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="photo-frame">
+            <img src="pics/im4.jpeg" alt="Imagen 4" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+    
+    <!-- <div class="memory-container">
+        <h2>Our Special Memories</h2>
+        <ul class="memory-list">
+            <li class="memory-item">Remember when we first met? Your smile lit up the entire room.</li>
+            <li class="memory-item">Our first date at that little café where we talked until they had to close.</li>
+            <li class="memory-item">That time we got caught in the rain and ended up dancing in it instead of running for cover.</li>
+            <li class="memory-item">[Add your own special memory here]</li>
+            <li class="memory-item">[Add your own special memory here]</li>
+        </ul>
+    </div> -->
+    
+    <div class="footer">
+        Made with love for you ❤️
+    </div>
+    
+    <script>
+        // Create falling petals
+        function createPetals() {
+            const container = document.getElementById('petalContainer');
+            const windowWidth = window.innerWidth;
+            
+            for (let i = 0; i < 30; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                // Random size between 10px and 20px
+                const size = Math.random() * 10 + 10;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size}px`;
+                
+                // Random position
+                petal.style.left = `${Math.random() * windowWidth}px`;
+                petal.style.top = `-${size}px`;
+                
+                // Random animation duration between 10s and 20s
+                const duration = Math.random() * 10 + 10;
+                petal.style.animationDuration = `${duration}s`;
+                
+                // Random animation delay
+                petal.style.animationDelay = `${Math.random() * 10}s`;
+                
+                container.appendChild(petal);
+            }
+        }
+        
+        // Create flowers
+        function createFlowers() {
+            const flowerField = document.getElementById('flowerField');
+            const messages = [
+                "Your smile brightens my darkest days",
+                "Your love inspires me to be better",
+                "Your laughter is my favorite sound",
+                "Your presence makes my world better",
+                "You brings beauty into my life",
+                "Your calls makes me feel like coming home",
+                "Your love is the greatest gift"
+            ];
+            
+            for (let i = 0; i < messages.length; i++) {
+                const flower = document.createElement('div');
+                flower.classList.add('flower');
+                flower.dataset.message = messages[i];
+                
+                // Create SVG flower
+                flower.innerHTML = `
+                    <svg width="100" height="100" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="20" fill="#FFD700" />
+                        <g>
+                            <ellipse cx="50" cy="20" rx="15" ry="20" fill="#FFEB3B" transform="rotate(0 50 50)" />
+                            <ellipse cx="50" cy="20" rx="15" ry="20" fill="#FFEB3B" transform="rotate(72 50 50)" />
+                            <ellipse cx="50" cy="20" rx="15" ry="20" fill="#FFEB3B" transform="rotate(144 50 50)" />
+                            <ellipse cx="50" cy="20" rx="15" ry="20" fill="#FFEB3B" transform="rotate(216 50 50)" />
+                            <ellipse cx="50" cy="20" rx="15" ry="20" fill="#FFEB3B" transform="rotate(288 50 50)" />
+                        </g>
+                    </svg>
+                `;
+                
+                flower.addEventListener('click', function() {
+                    alert(this.dataset.message);
+                    showHeartAnimation(event);
+                    revealSecretMessage();
+                });
+                
+                flowerField.appendChild(flower);
+            }
+        }
+        
+        // Show heart animation when clicking flowers
+        function showHeartAnimation(event) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-animation');
+            heart.innerHTML = '❤️';
+            heart.style.left = event.pageX + 'px';
+            heart.style.top = event.pageY + 'px';
+            document.body.appendChild(heart);
+            
+            // Remove heart after animation completes
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+        
+        // Reveal secret message after clicking some flowers
+        let flowerClicks = 0;
+        function revealSecretMessage() {
+            flowerClicks++;
+            if (flowerClicks >= 3) {
+                document.getElementById('secretMessage').style.opacity = 1;
+            }
+        }
+        
+        // Audio player functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('song');
+            const playButton = document.getElementById('playButton');
+            const pauseButton = document.getElementById('pauseButton');
+            const restartButton = document.getElementById('restartButton');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            const currentTimeEl = document.getElementById('currentTime');
+            const durationEl = document.getElementById('duration');
+            
+            audio.volume = 0.3; // Set volume to 50%
+
+            // Format time in minutes and seconds
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+            
+            // Update progress bar
+            function updateProgress() {
+                if (audio.duration) {
+                    const percentage = (audio.currentTime / audio.duration) * 100;
+                    progressBar.style.width = `${percentage}%`;
+                    currentTimeEl.textContent = formatTime(audio.currentTime);
+                }
+            }
+            
+            // Set audio time when clicking on progress bar
+            progressContainer.addEventListener('click', function(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const clickPercent = clickX / width;
+                audio.currentTime = clickPercent * audio.duration;
+            });
+            
+            // Play button
+            playButton.addEventListener('click', function() {
+                audio.play();
+            });
+            
+            // Pause button
+            pauseButton.addEventListener('click', function() {
+                audio.pause();
+            });
+            
+            // Restart button
+            restartButton.addEventListener('click', function() {
+                audio.currentTime = 0;
+                audio.play();
+            });
+            
+            // Update time display
+            audio.addEventListener('timeupdate', updateProgress);
+            
+            // When metadata is loaded, display duration
+            audio.addEventListener('loadedmetadata', function() {
+                durationEl.textContent = formatTime(audio.duration);
+            });
+            
+            // Handle audio errors
+            audio.addEventListener('error', function() {
+                alert('To use this feature, upload an MP3 file named "your-song.mp3" to your hosting service and update the source URL in the HTML.');
+            });
+        });
+        
+        // Initialize the page
+        window.onload = function() {
+            createPetals();
+            createFlowers();
+        };
+    </script>
+</body>
+</html>
