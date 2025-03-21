@@ -1,2 +1,3 @@
 [build]
-publish = "."  # Esto indica que el directorio raíz es donde se encuentran tus archivos
+  base = "."  # Asegura que el directorio base sea el directorio raíz
+  publish = "."  # Esto indica que el directorio raíz es donde se encuentran tus archivos.
