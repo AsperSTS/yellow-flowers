@@ -1,0 +1,2 @@
+[build]
+publish = "."  # Esto indica que el directorio raíz es donde se encuentran tus archivos
